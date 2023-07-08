@@ -68,16 +68,11 @@
           .then(function(response) {
             resultElement.innerHTML += "Fuzzed URL: " + fuzzedUrl + "\n";
             resultElement.innerHTML += "Response Code: " + response.status + "\n\n";
-
-            completedCount++;
-
-            // Check if all requests have completed
-            if (completedCount === requestCount) {
-              resultElement.innerHTML += "Fuzzing completed!";
-            }
           })
           .catch(function(error) {
             console.error(error);
+          })
+          .finally(function() {
             completedCount++;
 
             // Check if all requests have completed
@@ -93,7 +88,7 @@
       headers.append("Content-Type", "text/plain");
 
       var init = {
-        method: "GET",
+        method: "HEAD",
         mode: "no-cors",
         headers: headers
       };
