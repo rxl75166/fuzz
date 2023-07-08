@@ -66,11 +66,8 @@
 
         fetchWithNoCors(fuzzedUrl)
           .then(function(response) {
-            return response.text();
-          })
-          .then(function(responseText) {
             resultElement.innerHTML += "Fuzzed URL: " + fuzzedUrl + "\n";
-            resultElement.innerHTML += "Response: " + responseText + "\n\n";
+            resultElement.innerHTML += "Response Code: " + response.status + "\n\n";
 
             completedCount++;
 
