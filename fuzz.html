@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Fuzzing Tool</title>
+  <style>
+    /* Some basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+
+    #result {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Fuzzing Tool</h1>
+
+  <label for="url">URL:</label>
+  <input type="text" id="url" placeholder="Enter the URL to fuzz">
+
+  <label for="payloads">Payloads (one per line):</label>
+  <textarea id="payloads" placeholder="Enter the payloads to fuzz"></textarea>
+
+  <button onclick="startFuzzing()">Start Fuzzing</button>
+
+  <div id="result"></div>
+
+  <script>
+    function startFuzzing() {
+      var url = document.getElementById("url").value;
+      var payloads = document.getElementById("payloads").value.split("\n");
+
+      var resultElement = document.getElementById("result");
+      resultElement.innerHTML = ""; // Clear previous results
+
+      payloads.forEach(function(payload) {
+        var fuzzedUrl = url.replace("FUZZ", encodeURIComponent(payload));
+
+        var request = new XMLHttpRequest();
+        request.open("GET", fuzzedUrl, true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            resultElement.innerHTML += "Fuzzed URL: " + fuzzedUrl + "\n";
+            resultElement.innerHTML += "Response: " + request.responseText + "\n\n";
+          }
+        };
+        request.send();
+      });
+    }
+  </script>
+</body>
+</html>
