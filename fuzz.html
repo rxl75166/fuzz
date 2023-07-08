@@ -58,19 +58,50 @@
       var resultElement = document.getElementById("result");
       resultElement.innerHTML = ""; // Clear previous results
 
+      var requestCount = payloads.length;
+      var completedCount = 0;
+
       payloads.forEach(function(payload) {
         var fuzzedUrl = url.replace("FUZZ", encodeURIComponent(payload));
 
-        var request = new XMLHttpRequest();
-        request.open("GET", fuzzedUrl, true);
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
+        fetchWithNoCors(fuzzedUrl)
+          .then(function(response) {
+            return response.text();
+          })
+          .then(function(responseText) {
             resultElement.innerHTML += "Fuzzed URL: " + fuzzedUrl + "\n";
-            resultElement.innerHTML += "Response: " + request.responseText + "\n\n";
-          }
-        };
-        request.send();
+            resultElement.innerHTML += "Response: " + responseText + "\n\n";
+
+            completedCount++;
+
+            // Check if all requests have completed
+            if (completedCount === requestCount) {
+              resultElement.innerHTML += "Fuzzing completed!";
+            }
+          })
+          .catch(function(error) {
+            console.error(error);
+            completedCount++;
+
+            // Check if all requests have completed
+            if (completedCount === requestCount) {
+              resultElement.innerHTML += "Fuzzing completed!";
+            }
+          });
       });
+    }
+
+    function fetchWithNoCors(url) {
+      var headers = new Headers();
+      headers.append("Content-Type", "text/plain");
+
+      var init = {
+        method: "GET",
+        mode: "no-cors",
+        headers: headers
+      };
+
+      return fetch(url, init);
     }
   </script>
 </body>
